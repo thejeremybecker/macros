@@ -1,0 +1,23 @@
+'-----------------------------------------------------------------
+' QuickLogger v.0.1
+' Appends the date and a line of text to a file.
+' Based on code written by Joshua Fitzgerald, 7/2005.
+' Modified by Gina Trapani, 7/2006.
+' ----------------------------------------------------------------
+Option Explicit
+ 
+Dim filename
+filename = "D:\location-here\log.txt"
+ 
+Dim text
+text = InputBox("Add to "&filename&":", "Quick Logger")
+WriteToFile(text)
+ 
+Sub WriteToFile(text)
+ Dim fso
+ Dim textFile
+ Set fso = CreateObject("Scripting.FileSystemObject")
+ Set textFile = fso.OpenTextFile(filename, 8, True)
+ textFile.WriteLine Now & " " & text
+ textFile.Close
+End Sub
