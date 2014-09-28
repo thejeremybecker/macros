@@ -1,0 +1,6 @@
+Sub ShowSheetsList()
+'Shows sheet list. Assign to QuickAccess button or shortcut key in Excel
+
+Application.CommandBars("Workbook tabs").ShowPopup
+
+End Sub
