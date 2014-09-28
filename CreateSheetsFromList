@@ -1,0 +1,23 @@
+Sub CreateSheetsFromList()
+
+'Copies "Master" tab and renames tabs to cells in range beginning in RCM cell A5 
+'Only loops through visible rows (hidden rows do not get tabs created)
+'Named ranges can create error (click-through) when ranges are duplicated. To resolve, delete named ranges first in Name Manager.
+'Be sure 'Master (2)' sheet does not exist first.
+'Reset VBA project first to clear any variables (Reset/stop button in VBA editor)'
+'Code needs to be placed in active workbook module (copy from personal.xlsb)
+
+Dim ws1 As Worksheet
+Set ws1 = ThisWorkbook.Worksheets("Master")
+Dim MyCell As Range, MyRange As Range
+Set MyRange = Sheets("RCM").Range("A8")
+Set MyRange = Range(MyRange, MyRange.End(xlDown))
+
+For Each MyCell In MyRange
+	If MyCell.EntireRow.Hidden = False Then 'only includes non-hidden rows
+		ws1.Copy ThisWorkbook.Sheets(Sheets.Count)
+		ThisWorkbook.Worksheets("Master (2)").Name = MyCell.Value 
+		'renames sheets to match row in RCM
+	End If
+Next MyCell
+End Sub
