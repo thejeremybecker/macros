@@ -1,0 +1,40 @@
+Sub ConvertCSVtoRecords()
+'Macro to add rows for comma separated values
+'This takes comma separated value and adds rows (records) for each unique csv value'
+'duplicate values are ignored'
+
+Dim objRegex As Object
+Dim X
+Dim Y
+Dim lngRow As Long
+Dim lngCnt As Long
+Dim tempArr() As String
+Dim strArr
+Set objRegex = CreateObject("vbscript.regexp")
+objRegex.Pattern = "^\s+(.+?)$"
+
+'Define the range to be analysed
+X = Range([a1], Cells(Rows.Count, "d").End(xlUp)).Value2
+ReDim Y(1 To 4, 1 To 1000)
+For lngRow = 1 To UBound(X, 1)
+
+'Split each string by ","
+tempArr = Split(X(lngRow, 4), ",")
+For Each strArr In tempArr
+	lngCnt = lngCnt + 1
+
+'Add another 1000 records to resorted array every 1000 records
+If lngCnt Mod 1000 = 0 Then ReDim Preserve Y(1 To 4, 1 To lngCnt + 1000)
+	Y(1, lngCnt) = X(lngRow, 1)
+	Y(2, lngCnt) = X(lngRow, 2)
+	Y(3, lngCnt) = X(lngRow, 3)
+	Y(4, lngCnt) = objRegex.Replace(strArr, "$1")
+Next
+Next lngRow
+
+'Dump the re-ordered range to columns E:H
+[e1].Resize(lngCnt, 4).Value2 = Application.Transpose(Y)
+ActiveSheet.Range("E:H").RemoveDuplicates Columns:=Array(1, 2, 3, 4), _
+Header:=xlNo
+
+End Sub
