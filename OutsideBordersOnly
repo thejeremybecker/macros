@@ -1,5 +1,6 @@
 Sub OutsideBorderOnly()
 'removes all borders from selection and applies outside border to selection 'shortcut key Ctrl + Shift + O
+'assign shortcut key in Excel (Ctrl + Shift + O)
 
 With Selection.Borders(xlDiagonalDown).LineStyle = xlNone
 End With
