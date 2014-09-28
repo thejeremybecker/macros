@@ -1,4 +1,4 @@
-Sub SeparateNames()
+Sub SplitCellsByLineBreaks()
 'Macro to split cells into new rows based on line breaks - column C contains the rows to be split.
 
 Dim lLastRow As Long
