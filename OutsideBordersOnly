@@ -1,0 +1,65 @@
+Sub OutsideBorderOnly()
+'removes all borders from selection and applies outside border to selection 'shortcut key Ctrl + Shift + O
+
+With Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+End With
+
+With Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+End With
+
+With Selection.Borders(xlEdgeLeft).LineStyle = xlNone
+End With
+
+With Selection.Borders(xlEdgeTop).LineStyle = xlNone
+End With
+
+With Selection.Borders(xlEdgeBottom).LineStyle = xlNone
+End With
+
+With Selection.Borders(xlEdgeRight).LineStyle = xlNone
+End With
+
+With Selection.Borders(xlInsideVertical).LineStyle = xlNone
+End With
+
+With Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
+End With
+
+With Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+End With
+
+With Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+End With
+
+With Selection.Borders(xlEdgeLeft)
+	.LineStyle = xlContinuous
+	.ColorIndex = 0
+	.TintAndShade = 0
+	.Weight = xlThin
+End With
+
+With Selection.Borders(xlEdgeTop)
+	.LineStyle = xlContinuous
+	.ColorIndex = 0
+	.TintAndShade = 0
+	.Weight = xlThin
+End With
+
+With Selection.Borders(xlEdgeBottom)
+	.LineStyle = xlContinuous
+	.ColorIndex = 0
+	.TintAndShade = 0
+	.Weight = xlThin
+End With
+
+With Selection.Borders(xlEdgeRight)
+	.LineStyle = xlContinuous
+	.ColorIndex = 0
+	.TintAndShade = 0
+	.Weight = xlThin
+End With
+
+Selection.Borders(xlInsideVertical).LineStyle = xlNone
+Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
+
+End Sub
