@@ -7,6 +7,15 @@ Sub CreateSheetsFromList()
 'Reset VBA project first to clear any variables (Reset/stop button in VBA editor)'
 'Code needs to be placed in active workbook module (copy from personal.xlsb)
 
+'To build an audit workbook:
+'1) start with RCM - filter or hide controls that don't need tabs
+'2) create a master control test sheet and name "Master"
+'3) use VLOOKUP based on a control number cell in the master worksheet to look up control language and other attributes
+'4) copy CreateSheetsFromList into new module in current workbook and update starting reference of control list array
+'5) run CreateSheetsFromList
+'6) copy NameCellAsTabName into current workbook and update code to match control number cell and starting tab index
+'7) run NameCellAsTabName to set control number cell on each tab the same as the tab name - vlookup should now populate control attrubutes
+
 Dim ws1 As Worksheet
 Set ws1 = ThisWorkbook.Worksheets("Master")
 Dim MyCell As Range, MyRange As Range
@@ -20,4 +29,5 @@ For Each MyCell In MyRange
 		'renames sheets to match row in RCM
 	End If
 Next MyCell
+
 End Sub
