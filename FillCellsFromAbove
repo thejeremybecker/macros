@@ -1,0 +1,32 @@
+Sub FillCellsFromAbove()
+'macro to fill blank cells in selection with values from above 
+
+'Note: you don't need a macro to do this...
+
+'A non macro solution for filling in empty cells with the content
+'of the cell above each from within the selection range. You don't need a macro.
+'Make a selection (Multiple columns, for instance) 
+'F5 Special
+'go to blanks in the formula bar add =A1 then press Ctrl + Enter
+
+'Explanation--
+'if a macro is needed: You can choose any selection area including multiple columns.
+'When you pick out the blanks with Special cells the active cell will be the first blank cell
+'and you use the cell above it in the formula.Special Cells restricts itself to the Used Area 
+'so you can select multiple columns if you like and not be concerned that the entire column is
+'mostly unused.
+
+Application.ScreenUpdating = False ' Turn off screen updating to improve performance
+On Error Resume Next
+
+With Columns(1) '
+	Look in column A
+	    .SpecialCells(xlCellTypeBlanks).Formula = "=R[-1]C"
+		'For blank cells, set them to equal the cell above
+		.Value = .Value '
+		Convert the formula to a value
+End With
+
+Err.Clear
+Application.ScreenUpdating = True
+End Sub
