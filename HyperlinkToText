@@ -1,0 +1,12 @@
+Sub HyperlinkToText()
+'replaces links with text of hyperlink address for all cells in current selection
+
+Dim Cell As Range
+
+For Each Cell In Intersect(Selection, ActiveSheet.UsedRange)
+	If Cell.Hyperlinks.Count > 0 Then
+	Cell.Value = Cell.Hyperlinks.Item(1).Address
+End If
+Next
+
+End Sub
