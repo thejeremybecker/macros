@@ -1,0 +1,20 @@
+Sub SeparateNames()
+'Macro to split cells into new rows based on line breaks - column C contains the rows to be split.
+
+Dim lLastRow As Long
+Dim vArr1 As Variant, vArr2 As Variant, vArr3 As Variant
+lLastRow = Range("C" & Rows.Count).End(xlUp).Row
+
+On Error Resume Next
+
+For i = lLastRow To 2 Step -1
+	vArr1 = Split(Range("C" & i).Value, Chr(10))
+	vArr2 = Split(Range("D" & i).Value, Chr(10))
+	vArr3 = Split(Range("E" & i).Value, Chr(10))
+	Range("C" & i).Offset(1, 0).Resize(UBound(vArr1), 1).EntireRow.Insert Shift:=xlUp
+	Range("C" & i).Resize(UBound(vArr1) + 1, 1).Value = Application.Transpose(vArr1)
+	Range("D" & i).Resize(UBound(vArr2) + 1, 1).Value = Application.Transpose(vArr2)
+	Range("E" & i).Resize(UBound(vArr3) + 1, 1).Value = Application.Transpose(vArr3)
+Next i
+
+End Sub
