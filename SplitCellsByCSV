@@ -1,4 +1,4 @@
-Sub ConvertCSVtoRecords()
+Sub SplitCellsByCSV()
 'Macro to add rows for comma separated values
 'This takes comma separated value and adds rows (records) for each unique csv value'
 'duplicate values are ignored'
