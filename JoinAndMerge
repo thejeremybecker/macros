@@ -9,7 +9,7 @@ Const delim = ""
 On Error Resume Next
 
 For Each cell In Selection
-outputText = outputText & cell.Value & delim
+outputText = outputText & cell.Value & delim & vbCrLf
 Next cell
 With Selection
 .Clear
