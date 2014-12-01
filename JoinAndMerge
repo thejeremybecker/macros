@@ -1,10 +1,10 @@
 Sub JoinAndMerge()
-‘joins all the content in selected cells
-‘and puts the resulting text in top most cell
-‘then merges all cells
+'joins all the content in selected cells
+'and puts the resulting text in top most cell
+'then merges all cells
 
 Dim outputText As String
-Const delim = ” “
+Const delim = ""
 
 On Error Resume Next
 
