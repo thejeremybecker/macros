@@ -1,0 +1,247 @@
+Sub MergeAllWorkbooks()
+    'Source: http://www.rondebruin.nl/win/s3/win008.htm
+    Dim MyPath As String, FilesInPath As String
+    Dim MyFiles() As String
+    Dim SourceRcount As Long, FNum As Long
+    Dim mybook As Workbook, BaseWks As Worksheet
+    Dim sourceRange As Range, destrange As Range
+    Dim rnum As Long, CalcMode As Long
+
+    'Fill in the path\folder where the files are
+    MyPath = "C:\rwd\macros"
+
+    'Add a slash at the end if the user forget it
+    If Right(MyPath, 1) <> "\" Then
+        MyPath = MyPath & "\"
+    End If
+
+    'If there are no Excel files in the folder exit the sub
+    FilesInPath = Dir(MyPath & "*.xl*")
+    If FilesInPath = "" Then
+        MsgBox "No files found"
+        Exit Sub
+    End If
+
+    'Fill the array(myFiles)with the list of Excel files in the folder
+    FNum = 0
+    Do While FilesInPath <> ""
+        FNum = FNum + 1
+        ReDim Preserve MyFiles(1 To FNum)
+        MyFiles(FNum) = FilesInPath
+        FilesInPath = Dir()
+    Loop
+
+    'Change ScreenUpdating, Calculation and EnableEvents
+    With Application
+        CalcMode = .Calculation
+        .Calculation = xlCalculationManual
+        .ScreenUpdating = False
+        .EnableEvents = False
+    End With
+
+    'Add a new workbook with one sheet
+    Set BaseWks = Workbooks.Add(xlWBATWorksheet).Worksheets(1)
+    rnum = 1
+
+    'Loop through all files in the array(myFiles)
+    If FNum > 0 Then
+        For FNum = LBound(MyFiles) To UBound(MyFiles)
+            Set mybook = Nothing
+            On Error Resume Next
+            Set mybook = Workbooks.Open(MyPath & MyFiles(FNum))
+            On Error GoTo 0
+
+            If Not mybook Is Nothing Then
+
+                On Error Resume Next
+
+                With mybook.Worksheets(1)
+                    Set sourceRange = .Range("A1:C4")
+                End With
+
+                If Err.Number > 0 Then
+                    Err.Clear
+                    Set sourceRange = Nothing
+                Else
+                    'if SourceRange use all columns then skip this file
+                    If sourceRange.Columns.Count >= BaseWks.Columns.Count Then
+                        Set sourceRange = Nothing
+                    End If
+                End If
+                On Error GoTo 0
+
+                If Not sourceRange Is Nothing Then
+
+                    SourceRcount = sourceRange.Rows.Count
+
+                    If rnum + SourceRcount >= BaseWks.Rows.Count Then
+                        MsgBox "Sorry there are not enough rows in the sheet"
+                        BaseWks.Columns.AutoFit
+                        mybook.Close savechanges:=False
+                        GoTo ExitTheSub
+                    Else
+
+                        'Copy the file name in column A
+                        With sourceRange
+                            BaseWks.Cells(rnum, "A"). _
+                                    Resize(.Rows.Count).Value = MyFiles(FNum)
+                        End With
+
+                        'Set the destrange
+                        Set destrange = BaseWks.Range("B" & rnum)
+
+                        'we copy the values from the sourceRange to the destrange
+                        With sourceRange
+                            Set destrange = destrange. _
+                                            Resize(.Rows.Count, .Columns.Count)
+                        End With
+                        destrange.Value = sourceRange.Value
+
+                        rnum = rnum + SourceRcount
+                    End If
+                End If
+                mybook.Close savechanges:=False
+            End If
+
+        Next FNum
+        BaseWks.Columns.AutoFit
+    End If
+
+ExitTheSub:
+    'Restore ScreenUpdating, Calculation and EnableEvents
+    With Application
+        .ScreenUpdating = True
+        .EnableEvents = True
+        .Calculation = CalcMode
+    End With
+End Sub
+
+
+'If you want to copy all cells from the worksheet or from A2 till the last cell on
+'the worksheet then use the example below.
+'Change FirstCell = "A2" if you want to start in another cell.
+'Note: the code below use the function RDB_Last, copy this function also in your code module.
+
+Sub MergeAllWorkbooks_2()
+    Dim MyPath As String, FilesInPath As String
+    Dim MyFiles() As String
+    Dim SourceRcount As Long, FNum As Long
+    Dim mybook As Workbook, BaseWks As Worksheet
+    Dim sourceRange As Range, destrange As Range
+    Dim rnum As Long, CalcMode As Long
+    Dim FirstCell As String
+
+    'Fill in the path\folder where the files are
+    MyPath = "C:\rwd\macros"
+
+    'Add a slash at the end if the user forget it
+    If Right(MyPath, 1) <> "\" Then
+        MyPath = MyPath & "\"
+    End If
+
+    'If there are no Excel files in the folder exit the sub
+    FilesInPath = Dir(MyPath & "*.xl*")
+    If FilesInPath = "" Then
+        MsgBox "No files found"
+        Exit Sub
+    End If
+
+    'Fill the array(myFiles)with the list of Excel files in the folder
+    FNum = 0
+    Do While FilesInPath <> ""
+        FNum = FNum + 1
+        ReDim Preserve MyFiles(1 To FNum)
+        MyFiles(FNum) = FilesInPath
+        FilesInPath = Dir()
+    Loop
+
+    'Change ScreenUpdating, Calculation and EnableEvents
+    With Application
+        CalcMode = .Calculation
+        .Calculation = xlCalculationManual
+        .ScreenUpdating = False
+        .EnableEvents = False
+    End With
+
+    'Add a new workbook with one sheet
+    Set BaseWks = Workbooks.Add(xlWBATWorksheet).Worksheets(1)
+    rnum = 1
+
+    'Loop through all files in the array(myFiles)
+    If FNum > 0 Then
+        For FNum = LBound(MyFiles) To UBound(MyFiles)
+            Set mybook = Nothing
+            On Error Resume Next
+            Set mybook = Workbooks.Open(MyPath & MyFiles(FNum))
+            On Error GoTo 0
+
+            If Not mybook Is Nothing Then
+
+                On Error Resume Next
+
+                With mybook.Worksheets(1)
+                    FirstCell = "A2"
+                    Set sourceRange = .Range(FirstCell & ":" & RDB_Last(3, .Cells))
+                    'Test if the row of the last cell >= then the row of the FirstCell
+                    If RDB_Last(1, .Cells) < .Range(FirstCell).Row Then
+                        Set sourceRange = Nothing
+                    End If
+                End With
+
+                If Err.Number > 0 Then
+                    Err.Clear
+                    Set sourceRange = Nothing
+                Else
+                    'if SourceRange use all columns then skip this file
+                    If sourceRange.Columns.Count >= BaseWks.Columns.Count Then
+                        Set sourceRange = Nothing
+                    End If
+                End If
+                On Error GoTo 0
+
+                If Not sourceRange Is Nothing Then
+
+                    SourceRcount = sourceRange.Rows.Count
+
+                    If rnum + SourceRcount >= BaseWks.Rows.Count Then
+                        MsgBox "Sorry there are not enough rows in the sheet"
+                        BaseWks.Columns.AutoFit
+                        mybook.Close savechanges:=False
+                        GoTo ExitTheSub
+                    Else
+
+                        'Copy the file name in column A
+                        With sourceRange
+                            BaseWks.Cells(rnum, "A"). _
+                                    Resize(.Rows.Count).Value = MyFiles(FNum)
+                        End With
+
+                        'Set the destrange
+                        Set destrange = BaseWks.Range("B" & rnum)
+
+                        'we copy the values from the sourceRange to the destrange
+                        With sourceRange
+                            Set destrange = destrange. _
+                                            Resize(.Rows.Count, .Columns.Count)
+                        End With
+                        destrange.Value = sourceRange.Value
+
+                        rnum = rnum + SourceRcount
+                    End If
+                End If
+                mybook.Close savechanges:=False
+            End If
+
+        Next FNum
+        BaseWks.Columns.AutoFit
+    End If
+
+ExitTheSub:
+    'Restore ScreenUpdating, Calculation and EnableEvents
+    With Application
+        .ScreenUpdating = True
+        .EnableEvents = True
+        .Calculation = CalcMode
+    End With
+End Sub
+
