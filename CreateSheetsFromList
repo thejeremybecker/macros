@@ -19,7 +19,7 @@ Sub CreateSheetsFromList()
 Dim ws1 As Worksheet
 Set ws1 = ThisWorkbook.Worksheets("Master")
 Dim MyCell As Range, MyRange As Range
-Set MyRange = Sheets("RCM").Range("A8")
+Set MyRange = Sheets("RACM").Range("A8")
 Set MyRange = Range(MyRange, MyRange.End(xlDown))
 
 For Each MyCell In MyRange
