@@ -1,12 +1,12 @@
 Sub NameCellAsTabName()
-'Rename cell "C7" on each sheet to tab name
-'Names cell C7 on sheets with 'index' greater than 3(fourth sheet)
+'Rename cell "C1" on each sheet to tab name
+'Names cell C1 on sheets with 'index' greater than 2(third sheet)
 
 Dim ws As Worksheet
 
 For Each ws In ActiveWorkbook.Worksheets
-	If ws.Index > 3 Then 'renames sheets with index greater than 3
-		ws.Range("C7") = ws.Name 'renames cell C7 to match sheet name
+	If ws.Index > 2 Then 'renames sheets with index greater than 2
+		ws.Range("C1") = ws.Name 'renames cell C1 to match sheet name
 	End If
 Next
 End Sub
