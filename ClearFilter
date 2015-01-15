@@ -1,0 +1,4 @@
+Sub ClearFilter()
+' Clears filter'
+    ActiveSheet.ShowAllData
+End Sub
