@@ -1,4 +1,6 @@
 Sub ClearFilter()
 ' Clears filter'
-    ActiveSheet.ShowAllData
+    If (ActiveSheet.AutoFilterMode And ActiveSheet.FilterMode) Or ActiveSheet.FilterMode Then
+      ActiveSheet.ShowAllData
+    End If
 End Sub
