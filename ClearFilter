@@ -1,5 +1,6 @@
 Sub ClearFilter()
 ' Clears filter'
+' If statement suppresses error when there is no filter applied'
     If (ActiveSheet.AutoFilterMode And ActiveSheet.FilterMode) Or ActiveSheet.FilterMode Then
       ActiveSheet.ShowAllData
     End If
