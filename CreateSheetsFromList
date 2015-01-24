@@ -5,29 +5,29 @@ Sub CreateSheetsFromList()
 'Named ranges can create error (click-through) when ranges are duplicated. To resolve, delete named ranges first in Name Manager.
 'Be sure 'Master (2)' sheet does not exist first.
 'Reset VBA project first to clear any variables (Reset/stop button in VBA editor)'
-'Code needs to be placed in active workbook module (copy from personal.xlsb)
+'RACM needs to be first tab; Master needs to be second tab
 
 'To build an audit workbook:
-'1) start with RCM - filter or hide controls that don't need tabs
+'1) start with RACM - filter or hide controls that don't need tabs
 '2) create a master control test sheet and name "Master"
 '3) use VLOOKUP based on a control number cell in the master worksheet to look up control language and other attributes
-'4) copy CreateSheetsFromList into new module in current workbook and update starting reference of control list array
 '5) run CreateSheetsFromList
-'6) copy NameCellAsTabName into current workbook and update code to match control number cell and starting tab index
-'7) run NameCellAsTabName to set control number cell on each tab the same as the tab name - vlookup should now populate control attrubutes
 
 Dim ws1 As Worksheet
-Set ws1 = ThisWorkbook.Worksheets("Master")
+Set ws1 = ActiveWorkbook.Worksheets("Master")
 Dim MyCell As Range, MyRange As Range
 Set MyRange = Sheets("RACM").Range("A8")
 Set MyRange = Range(MyRange, MyRange.End(xlDown))
 
 For Each MyCell In MyRange
 	If MyCell.EntireRow.Hidden = False Then 'only includes non-hidden rows
-		ws1.Copy ThisWorkbook.Sheets(Sheets.Count)
-		ThisWorkbook.Worksheets("Master (2)").Name = MyCell.Value 
+		ws1.Copy ActiveWorkbook.Sheets(Sheets.Count)
+		ActiveWorkbook.Worksheets("Master (2)").Name = MyCell.Value 
 		'renames sheets to match row in RCM
 	End If
 Next MyCell
+
+Sheets("Master").Select
+Sheets("Master").Move Before:=Sheets(2)
 
 End Sub
