@@ -23,7 +23,7 @@ Sub CreateSheetsFromAList()
     For Each MyCell In MyRange
       If MyCell.EntireRow.Hidden = False Then 'only includes non-hidden rows
         ws1.Copy ActiveWorkbook.Sheets(Sheets.Count)
-        ActiveWorkbook.Worksheets("Master (2)").Name = MyCell.Value 'renames sheets to match row in RCM
+        ActiveWorkbook.Worksheets("Master (2)").Name = MyCell.Value 'renames sheets to match row in RACM
       End If
        
     Next MyCell
