@@ -1,33 +1,47 @@
-Sub CreateSheetsFromList()
+Sub CreateSheetsFromAList()
+' Makes individual sheets based on a source table with cell references back to source table
+' Quick and easy way to make test scripts
+' Only loops through visible rows (hidden rows do not get tabs created)
+' Named ranges can create error (click-through) when ranges are duplicated. To resolve, delete named ranges first in Name Manager.
 
-'Copies "Master" tab and renames tabs to cells in range beginning in RCM cell A5 
-'Only loops through visible rows (hidden rows do not get tabs created)
-'Named ranges can create error (click-through) when ranges are duplicated. To resolve, delete named ranges first in Name Manager.
-'Be sure 'Master (2)' sheet does not exist first.
-'Reset VBA project first to clear any variables (Reset/stop button in VBA editor)'
-'RACM needs to be first tab; Master needs to be second tab
+' Confirm variables 1 - 5 below first
+' Be sure 'Master (2)' sheet does not exist.
+' Reset VBA project first to clear any variables (Reset/stop button in VBA editor)'
+        
+    Dim ws1 As Worksheet
+    Dim MyCell As Range, MyRange As Range
 
-'To build an audit workbook:
-'1) start with RACM - filter or hide controls that don't need tabs
-'2) create a master control test sheet and name "Master"
-'3) use VLOOKUP based on a control number cell in the master worksheet to look up control language and other attributes
-'5) run CreateSheetsFromList
+' 1 - set name of Master tab
+    Set ws1 = ActiveWorkbook.Worksheets("Master")
+    
+' 2 - set source tab name
+' 3 - set top left cell in range
+    Set MyRange = Sheets("RACM").Range("A3")
+    
+    Set MyRange = Range(MyRange, MyRange.End(xlDown))
 
-Dim ws1 As Worksheet
-Set ws1 = ActiveWorkbook.Worksheets("Master")
-Dim MyCell As Range, MyRange As Range
-Set MyRange = Sheets("RACM").Range("A8")
-Set MyRange = Range(MyRange, MyRange.End(xlDown))
+    For Each MyCell In MyRange
+      If MyCell.EntireRow.Hidden = False Then 'only includes non-hidden rows
+        ws1.Copy ActiveWorkbook.Sheets(Sheets.Count)
+        ActiveWorkbook.Worksheets("Master (2)").Name = MyCell.Value 'renames sheets to match row in RCM
+      End If
+       
+    Next MyCell
 
-For Each MyCell In MyRange
-	If MyCell.EntireRow.Hidden = False Then 'only includes non-hidden rows
-		ws1.Copy ActiveWorkbook.Sheets(Sheets.Count)
-		ActiveWorkbook.Worksheets("Master (2)").Name = MyCell.Value 
-		'renames sheets to match row in RCM
-	End If
-Next MyCell
-
-Sheets("Master").Select
-Sheets("Master").Move Before:=Sheets(2)
-
+    Sheets("Master").Select
+    Sheets("Master").Move Before:=Sheets(2)
+    
+    Dim ws2 As Worksheet
+    
+    For Each ws2 In ActiveWorkbook.Worksheets
+    
+' 4 - set starting tab index here to set cell values
+      If ws2.Index > 2 Then
+      
+' 5 - set this cell to match pivot cell in Master
+      ws2.Range("C1") = ws2.Name
+      
+      End If
+Next
+    
 End Sub
