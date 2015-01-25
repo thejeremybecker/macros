@@ -1,0 +1,97 @@
+Sub Copy_Every_Sheet_To_New_Workbook()
+'Variation of source: http://www.rondebruin.nl/win/s3/win007.htm
+'Working in 97-2013
+    Dim FileExtStr As String
+    Dim FileFormatNum As Long
+    Dim Sourcewb As Workbook
+    Dim Destwb As Workbook
+    Dim sh As Worksheet
+    Dim DateString As String
+    Dim FolderName As String
+
+    With Application
+        .ScreenUpdating = False
+        .EnableEvents = False
+        .Calculation = xlCalculationManual
+    End With
+
+    'Copy every sheet from the workbook with this macro
+    Set Sourcewb = ActiveWorkbook
+
+    'Create new folder to save the new files in
+    DateString = Format(Now, "yyyy-mm-dd hh-mm-ss")
+    FolderName = Sourcewb.Path & "\" & Sourcewb.Name & " " & DateString
+    MkDir FolderName
+
+    'Copy every visible sheet to a new workbook
+    For Each sh In Sourcewb.Worksheets
+    
+    'Set to not copy first sheets
+    If sh.Index > 2 Then
+        
+        'If the sheet is visible then copy it to a new workbook
+        If sh.Visible = -1 Then
+            sh.Copy
+
+            'Set Destwb to the new workbook
+            Set Destwb = ActiveWorkbook
+
+            'Determine the Excel version and file extension/format
+            With Destwb
+                If Val(Application.Version) < 12 Then
+                    'You use Excel 97-2003
+                    FileExtStr = ".xls": FileFormatNum = -4143
+                Else
+                    'You use Excel 2007-2013
+                    If Sourcewb.Name = .Name Then
+                        MsgBox "Your answer is NO in the security dialog"
+                        GoTo GoToNextSheet
+                    Else
+                        Select Case Sourcewb.FileFormat
+                        Case 51: FileExtStr = ".xlsx": FileFormatNum = 51
+                        Case 52:
+                            If .HasVBProject Then
+                                FileExtStr = ".xlsm": FileFormatNum = 52
+                            Else
+                                FileExtStr = ".xlsx": FileFormatNum = 51
+                            End If
+                        Case 56: FileExtStr = ".xls": FileFormatNum = 56
+                        Case Else: FileExtStr = ".xlsb": FileFormatNum = 50
+                        End Select
+                    End If
+                End If
+            End With
+
+            'Change all cells in the worksheet to values if you want
+            If Destwb.Sheets(1).ProtectContents = False Then
+                With Destwb.Sheets(1).UsedRange
+                    .Cells.Copy
+                    .Cells.PasteSpecial xlPasteValues
+                    .Cells(1).Select
+                End With
+                Application.CutCopyMode = False
+            End If
+
+
+            'Save the new workbook and close it
+            With Destwb
+                .SaveAs FolderName _
+                      & "\" & Destwb.Sheets(1).Name & FileExtStr, _
+                        FileFormat:=FileFormatNum
+                .Close False
+            End With
+
+        End If
+    End If
+GoToNextSheet:
+    Next sh
+
+    MsgBox "You can find the files in " & FolderName
+
+    With Application
+        .ScreenUpdating = True
+        .EnableEvents = True
+        .Calculation = xlCalculationAutomatic
+    End With
+End Sub
+
