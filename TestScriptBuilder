@@ -1,0 +1,142 @@
+Sub TestScriptBuilder()
+' Makes individual sheets based on a source table with cell references back to source table
+' Quick and easy way to make test scripts
+' Only loops through visible rows (hidden rows do not get tabs created)
+' Named ranges can create error (click-through) when ranges are duplicated. To resolve, delete named ranges first in Name Manager.
+
+' Confirm variables 1 - 5 below first
+' Be sure 'Master (2)' sheet does not exist.
+' Reset VBA project first to clear any variables (Reset/stop button in VBA editor)'
+        
+    Dim ws1 As Worksheet
+    Dim MyCell As Range, MyRange As Range
+
+' 1 - set name of Master tab
+    Set ws1 = ActiveWorkbook.Worksheets("Master")
+    
+' 2 - set source tab name
+' 3 - set top left cell in range
+    Set MyRange = Sheets("RACM").Range("A3")
+    
+    Set MyRange = Range(MyRange, MyRange.End(xlDown))
+
+    For Each MyCell In MyRange
+      If MyCell.EntireRow.Hidden = False Then 'only includes non-hidden rows
+        ws1.Copy ActiveWorkbook.Sheets(Sheets.Count)
+        ActiveWorkbook.Worksheets("Master (2)").Name = MyCell.Value 'renames sheets to match row in RACM
+      End If
+       
+    Next MyCell
+
+    Sheets("Master").Select
+    Sheets("Master").Move Before:=Sheets(2)
+    
+    Dim ws2 As Worksheet
+    
+    For Each ws2 In ActiveWorkbook.Worksheets
+    
+' 4 - set starting tab index here to set cell values
+      If ws2.Index > 2 Then
+      
+' 5 - set this cell to match pivot cell in Master
+      ws2.Range("C1") = ws2.Name
+      
+      End If
+Next
+
+'Variation of source: http://www.rondebruin.nl/win/s3/win007.htm
+'Working in 97-2013
+    Dim FileExtStr As String
+    Dim FileFormatNum As Long
+    Dim Sourcewb As Workbook
+    Dim Destwb As Workbook
+    Dim sh As Worksheet
+    Dim DateString As String
+    Dim FolderName As String
+
+    With Application
+        .ScreenUpdating = False
+        .EnableEvents = False
+        .Calculation = xlCalculationManual
+    End With
+
+    'Copy every sheet from the workbook with this macro
+    Set Sourcewb = ActiveWorkbook
+
+    'Create new folder to save the new files in
+    DateString = Format(Now, "yyyy-mm-dd hh-mm-ss")
+    FolderName = Sourcewb.Path & "\" & Sourcewb.Name & " " & DateString
+    MkDir FolderName
+
+    'Copy every visible sheet to a new workbook
+    For Each sh In Sourcewb.Worksheets
+    
+    'Set to not copy first sheets
+    If sh.Index > 2 Then
+        
+        'If the sheet is visible then copy it to a new workbook
+        If sh.Visible = -1 Then
+            sh.Copy
+
+            'Set Destwb to the new workbook
+            Set Destwb = ActiveWorkbook
+
+            'Determine the Excel version and file extension/format
+            With Destwb
+                If Val(Application.Version) < 12 Then
+                    'You use Excel 97-2003
+                    FileExtStr = ".xls": FileFormatNum = -4143
+                Else
+                    'You use Excel 2007-2013
+                    If Sourcewb.Name = .Name Then
+                        MsgBox "Your answer is NO in the security dialog"
+                        GoTo GoToNextSheet
+                    Else
+                        Select Case Sourcewb.FileFormat
+                        Case 51: FileExtStr = ".xlsx": FileFormatNum = 51
+                        Case 52:
+                            If .HasVBProject Then
+                                FileExtStr = ".xlsm": FileFormatNum = 52
+                            Else
+                                FileExtStr = ".xlsx": FileFormatNum = 51
+                            End If
+                        Case 56: FileExtStr = ".xls": FileFormatNum = 56
+                        Case Else: FileExtStr = ".xlsb": FileFormatNum = 50
+                        End Select
+                    End If
+                End If
+            End With
+
+            'Change all cells in the worksheet to values if you want
+            If Destwb.Sheets(1).ProtectContents = False Then
+                With Destwb.Sheets(1).UsedRange
+                    .Cells.Copy
+                    .Cells.PasteSpecial xlPasteValues
+                    .Cells(1).Select
+                End With
+                Application.CutCopyMode = False
+            End If
+
+
+            'Save the new workbook and close it
+            With Destwb
+                .SaveAs FolderName _
+                      & "\" & Destwb.Sheets(1).Name & FileExtStr, _
+                        FileFormat:=FileFormatNum
+                .Close False
+            End With
+
+        End If
+    End If
+GoToNextSheet:
+    Next sh
+
+    MsgBox "You can find the files in " & FolderName
+
+    With Application
+        .ScreenUpdating = True
+        .EnableEvents = True
+        .Calculation = xlCalculationAutomatic
+    End With
+    
+End Sub
