@@ -1,0 +1,9 @@
+Array formula to create calendar
+Enter in cells B5:H10
+Enter month in cell B3
+
+=IF(MONTH(DATE(YEAR(B3),MONTH(B3),1))<>MONTH(DATE(YEAR(B3),
+MONTH(B3),1)-(WEEKDAY(DATE(YEAR(B3),MONTH(B3),1))-1)
++{0;1;2;3;4;5}*7+{1,2,3,4,5,6,7}-1),””,
+DATE(YEAR(B3),MONTH(B3),1)-(WEEKDAY(DATE(YEAR(B3),
+MONTH(B3),1))-1)+{0;1;2;3;4;5}*7+{1,2,3,4,5,6,7}-1)
