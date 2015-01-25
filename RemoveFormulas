@@ -1,0 +1,14 @@
+Sub RemoveFormulas()
+' Copy and paste as values for all sheets above specified index
+
+    Dim sh As Worksheet
+    For Each sh In ActiveWorkbook.Worksheets
+    
+    ' Set starting sheet here
+    If sh.Index > 2 Then
+        With sh.UsedRange
+            .Value = .Value
+        End With
+    End If
+    Next sh
+End Sub
