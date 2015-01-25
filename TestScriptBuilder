@@ -1,4 +1,8 @@
 Sub TestScriptBuilder()
+' Creates test scripts in individual workbooks based on information in a matrix
+' Combination of CreateSheetsFromList, RemoveFormulas, and CopySheetsToNewBook macros 
+
+' CreateSheetsFromList
 ' Makes individual sheets based on a source table with cell references back to source table
 ' Quick and easy way to make test scripts
 ' Only loops through visible rows (hidden rows do not get tabs created)
@@ -30,9 +34,10 @@ Sub TestScriptBuilder()
 
     Sheets("Master").Select
     Sheets("Master").Move Before:=Sheets(2)
+ 
+ ' Changes cell values in reference cell in worksheets so that VLOOKUPs pull in data from matrix   
     
     Dim ws2 As Worksheet
-    
     For Each ws2 In ActiveWorkbook.Worksheets
     
 ' 4 - set starting tab index here to set cell values
