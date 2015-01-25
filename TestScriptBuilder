@@ -44,6 +44,11 @@ Sub TestScriptBuilder()
       End If
 Next
 
+
+'This part removes formulas and copies tabs into new workbooks
+'located in a new folder in the current working directory.
+'Files are named as tab names.
+
 'Variation of source: http://www.rondebruin.nl/win/s3/win007.htm
 'Working in 97-2013
     Dim FileExtStr As String
