@@ -27,7 +27,7 @@ Sub Copy_Every_Sheet_To_New_Workbook()
     For Each sh In Sourcewb.Worksheets
     
     'Set to not copy first sheets
-    If sh.Index > 2 Then
+    If sh.Index > 0 Then
         
         'If the sheet is visible then copy it to a new workbook
         If sh.Visible = -1 Then
