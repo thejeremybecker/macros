@@ -1,0 +1,8 @@
+Sub CaseUpper()
+   ' Loop to cycle through each cell in the specified range.
+   ' Adapted from https://support.microsoft.com/en-us/kb/291323
+   
+   For Each Cell In Intersect(Selection, ActiveSheet.UsedRange)
+      Cell.Value = UCase(Cell.Value)
+   Next
+End Sub
