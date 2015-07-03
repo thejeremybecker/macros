@@ -1,0 +1,87 @@
+Sub Button1_Click()
+Application.ScreenUpdating = False
+Dim i As Integer, j As Integer, lin As Integer, k As Integer
+
+'initialize destination line
+'this is the first line
+lin = 8
+
+'wb and sheet variables
+Dim wb As Workbook
+Dim ws As Worksheet
+Dim ds As Worksheet
+Set wb = ActiveWorkbook
+Set ws = Sheets("Tools")
+Set ds = Sheets("Request List")
+k = ds.Cells(lin-1,Columns.Count).End(xlToRight).Column
+
+wb.Activate
+ws.Select
+
+'set i loop range (rows)
+For i = 3 To Range("A2").End(xlDown).Row
+
+    'set j loop range (columns)
+    For j = 3 To Range("B2").End(xlToRight).Column
+    
+    'check if i/j cell is checked
+    If Cells(i, j).Value = "x" Then
+
+        'write request number
+        ds.Cells(lin, 1) = lin - 7
+
+        'write row with j value
+        ds.Cells(lin, 2) = Cells(2, j).Value
+           
+        'write row with i value
+        ds.Cells(lin, 3) = Cells(i, 1).Value
+        
+        'write row with i+1 value
+        ds.Cells(lin, 4) = Cells(i, 2).Value
+
+        'find and replace any <> fields with system name
+        ds.Cells(lin, 4).Replace "<*>", ds.Cells(lin, 2).Value
+
+        'copy formatting and right-most columns down one row if it's not the first row
+        If j > 3 Then
+            Range(ds.Cells(lin - 1, 1), ds.Cells(lin - 1, 4)).Copy
+            Range(ds.Cells(lin - 1, 1), ds.Cells(lin, 4)).PasteSpecial (xlPasteFormats)
+
+            'copy right-most cells down to current line
+            Range(ds.Cells(lin - 1, 5), ds.Cells(lin - 1, k)).Copy  _
+            Destination:=Range(ds.Cells(lin - 1, 5), ds.Cells(lin, k))
+
+            Application.CutCopyMode = False
+        End If
+
+        'increment line counter
+        lin = lin + 1
+
+    End If
+
+    Next j
+
+Next i
+
+'saves request tab as new workbook
+ds.Copy
+Set wb = ActiveWorkbook
+
+With wb
+    .SaveAs ThisWorkbook.Path & "\Request List" & Format(Now, " yyyyddmm hhmmss") & ".xlsx"
+    .Close False
+End With
+
+Set wb = ActiveWorkbook
+
+'message box with file location
+MsgBox "You can find the Request List in " & wb.Path
+
+'reset Request List tab
+Range(ds.Rows(9), ds.Rows(lin)).Delete
+Range(ds.Rows(9), ds.Rows(lin)).ClearFormats
+ds.Rows(8).ClearContents
+
+Application.ScreenUpdating = True
+
+End Sub
