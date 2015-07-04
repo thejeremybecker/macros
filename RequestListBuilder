@@ -24,8 +24,8 @@ For i = 3 To Range("A2").End(xlDown).Row
     'set j loop range (columns)
     For j = 3 To Range("B2").End(xlToRight).Column
     
-    'check if i/j cell is checked
-    If Cells(i, j).Value = "x" Then
+    'check if i/j intersection is not blank (checked)
+    If Cells(i, j).Value <> "" Then
 
         'write request number
         ds.Cells(lin, 1) = lin - 7
