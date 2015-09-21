@@ -27,10 +27,16 @@ Sub TestScriptBuilder()
     For Each MyCell In MyRange
       If MyCell.EntireRow.Hidden = False Then 'only includes non-hidden rows
         ws1.Copy ActiveWorkbook.Sheets(Sheets.Count)
+        ' Run the Error handler "ErrHandler" when an error occurs.
         'add error message catch here "Encountered error. Duplicate name in RACM column A,
         'or RACM data does not begin in cell [myrange].
+        On Error GoTo Errhandler
         ActiveWorkbook.Worksheets("Master (2)").Name = MyCell.Value 'renames sheets to match row in RACM
+        'Disable the error handler.
+        On Error GoTo 0
       End If
+       
+
        
     Next MyCell
 
@@ -150,4 +156,10 @@ GoToNextSheet:
         .EnableEvents = True
         .Calculation = xlCalculationAutomatic
     End With
+    
+Exit Sub
+
+Errhandler:
+      ' If an error occurs, display a message and end the macro.
+      MsgBox "Reference error. Make sure that all values in Column A of the RACM tab are unique. Make sure that RACM data begins in cell A7."
 End Sub
