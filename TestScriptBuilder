@@ -1,6 +1,6 @@
 Sub TestScriptBuilder()
 ' Creates test scripts in individual workbooks based on information in a matrix
-' Combination of CreateSheetsFromList, RemoveFormulas, and CopySheetsToNewBook macros 
+' Combination of CreateSheetsFromList, RemoveFormulas, and CopySheetsToNewBook macros
 
 ' CreateSheetsFromList
 ' Makes individual sheets based on a source table with cell references back to source table
@@ -20,13 +20,15 @@ Sub TestScriptBuilder()
     
 ' 2 - set source tab name
 ' 3 - set top left cell in range
-    Set MyRange = Sheets("RACM").Range("A3")
+    Set MyRange = Sheets("RACM").Range("A7")
     
     Set MyRange = Range(MyRange, MyRange.End(xlDown))
 
     For Each MyCell In MyRange
       If MyCell.EntireRow.Hidden = False Then 'only includes non-hidden rows
         ws1.Copy ActiveWorkbook.Sheets(Sheets.Count)
+        'add error message catch here "Encountered error. Duplicate name in RACM column A,
+        'or RACM data does not begin in cell [myrange].
         ActiveWorkbook.Worksheets("Master (2)").Name = MyCell.Value 'renames sheets to match row in RACM
       End If
        
@@ -35,7 +37,7 @@ Sub TestScriptBuilder()
     Sheets("Master").Select
     Sheets("Master").Move Before:=Sheets(2)
  
- ' Changes cell values in reference cell in worksheets so that VLOOKUPs pull in data from matrix   
+ ' Changes cell values in reference cell in worksheets so that VLOOKUPs pull in data from matrix
     
     Dim ws2 As Worksheet
     For Each ws2 In ActiveWorkbook.Worksheets
@@ -148,5 +150,4 @@ GoToNextSheet:
         .EnableEvents = True
         .Calculation = xlCalculationAutomatic
     End With
-    
 End Sub
