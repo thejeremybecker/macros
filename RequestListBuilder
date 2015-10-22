@@ -7,10 +7,10 @@ Dim wb As Workbook
 Dim ws As Worksheet
 Dim ds As Worksheet
 Set wb = ActiveWorkbook
-Set ws = Sheets("Tools")
-Set ds = Sheets("Request List")
-k = ds.Cells(lin - 1, Columns.Count).End(xlToRight).Column
+Set ws = Sheets("Request List Matrix")
+Set ds = Sheets("Request List Template")
 lin = 8 'first line in request template sheet
+k = ds.Cells(lin - 1, Columns.Count).End(xlToRight).Column
 
 wb.Activate
 ws.Select
