@@ -1,4 +1,4 @@
-Sub TestScriptBuilder()
+Sub BuildTestScripts()
 ' Creates test scripts in individual workbooks based on information in a matrix
 ' Combination of CreateSheetsFromList, RemoveFormulas, and CopySheetsToNewBook macros
 
@@ -35,13 +35,11 @@ Sub TestScriptBuilder()
         'Disable the error handler.
         On Error GoTo 0
       End If
-       
-
-       
+              
     Next MyCell
 
     Sheets("Master").Select
-    Sheets("Master").Move Before:=Sheets(2)
+    Sheets("Master").Move Before:=Sheets(4)
  
  ' Changes cell values in reference cell in worksheets so that VLOOKUPs pull in data from matrix
     
@@ -49,14 +47,13 @@ Sub TestScriptBuilder()
     For Each ws2 In ActiveWorkbook.Worksheets
     
 ' 4 - set starting tab index here to set cell values
-      If ws2.Index > 2 Then
+      If ws2.Index > 4 Then
       
 ' 5 - set this cell to match pivot cell in Master
       ws2.Range("C1") = ws2.Name
       
       End If
 Next
-
 
 'This part removes formulas and copies tabs into new workbooks
 'located in a new folder in the current working directory.
@@ -90,7 +87,7 @@ Next
     For Each sh In Sourcewb.Worksheets
     
     'Set to not copy first sheets
-    If sh.Index > 2 Then
+    If sh.Index > 4 Then
         
         'If the sheet is visible then copy it to a new workbook
         If sh.Visible = -1 Then
