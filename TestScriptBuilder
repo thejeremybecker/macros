@@ -146,7 +146,19 @@ Next
 GoToNextSheet:
     Next sh
 
+'deletes all added tabs in tool workbook.
+'remove this for loop to maintain all test scripts
+'in a single workbook with vlookup back to RACM tab
+For Each sh In Sourcewb.Worksheets
+    If sh.Index > 4 Then
+        Application.DisplayAlerts = False
+        sh.Delete
+        Application.DisplayAlerts = True
+    End If
+Next sh
+
     MsgBox "You can find the files in " & FolderName
+
 
     With Application
         .ScreenUpdating = True
