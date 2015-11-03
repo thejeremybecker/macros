@@ -1,0 +1,46 @@
+Sub Macro1()
+    Application.DisplayAlerts = False
+
+    Dim Sourcewb As Workbook
+    Dim Destwb As Workbook
+    Dim PathName As String
+    Dim FileName As String
+    
+    Set Sourcewb = ActiveWorkbook
+    Sourcewb.ActiveSheet.Select
+    
+    ActiveSheet.Copy After:=ActiveSheet
+
+    ' Delete hidden rows and columns'
+    Dim i As Integer
+    Dim j As Integer
+    For i = ActiveSheet.Cells.SpecialCells(11).Column To 1 Step -1
+    With ActiveSheet.Columns(i).EntireColumn
+    If .Hidden = True Then .Delete (xlShiftToLeft)
+    End With
+    Next
+
+    For j = ActiveSheet.Cells.SpecialCells(11).Row To 1 Step -1
+    With ActiveSheet.Rows(j).EntireRow
+    If .Hidden = True Then .EntireRow.Delete
+    End With
+    Next
+    
+    ActiveSheet.Select
+    ActiveSheet.Move
+    Set Destwb = ActiveWorkbook
+
+    PathName = ThisWorkbook.Path
+    FileName = Replace(ThisWorkbook.Name, ".xlsx", " ")
+    
+    Destwb.SaveAs PathName & "\" & FileName & Format(Now, "yyyy-mm-dd hhmmss")
+    Destwb.Close
+    
+    Application.DisplayAlerts = True
+    
+    MsgBox "You can find the summarized file in " & PathName & "."
+    
+End Sub
+
+
+
