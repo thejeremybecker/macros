@@ -1,0 +1,18 @@
+Sub DeleteHiddenRowColumn()
+' Deletes all hidden rows and columns in selected sheet
+
+Dim i As Integer
+Dim j As Integer
+        For i = Cells.SpecialCells(11).Column To 1 Step -1
+        With Columns(i).EntireColumn
+        If .Hidden = True Then .Delete (xlShiftToLeft)
+        End With
+        Next
+
+        For j = Cells.SpecialCells(11).Row To 1 Step -1
+        With Rows(j).EntireRow
+        If .Hidden = True Then .EntireRow.Delete
+        End With
+        Next
+        
+End Sub
