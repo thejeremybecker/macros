@@ -1,4 +1,4 @@
-Sub Macro1()
+Sub CreateSummarizedWorkbookDeleteHiddenRowsColumns()
     Application.DisplayAlerts = False
 
     Dim Sourcewb As Workbook
