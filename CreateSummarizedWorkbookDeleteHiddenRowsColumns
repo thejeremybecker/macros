@@ -27,7 +27,7 @@ Sub CreateSummarizedWorkbookDeleteHiddenRowsColumns()
     Next
     
     ActiveSheet.Select
-    ActiveSheet.Copy
+    ActiveSheet.Move
     Set Destwb = ActiveWorkbook
 
     PathName = Sourcewb.Path
