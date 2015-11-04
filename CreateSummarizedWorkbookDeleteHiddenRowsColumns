@@ -27,20 +27,19 @@ Sub CreateSummarizedWorkbookDeleteHiddenRowsColumns()
     Next
     
     ActiveSheet.Select
-    ActiveSheet.Move
+    ActiveSheet.Copy
     Set Destwb = ActiveWorkbook
 
-    PathName = ThisWorkbook.Path
-    FileName = Replace(ThisWorkbook.Name, ".xlsx", " ")
+    PathName = Sourcewb.Path
+    FileName = Replace(Sourcewb.Name, ".xlsx", " ")
     
-    Destwb.SaveAs PathName & "\" & FileName & Format(Now, "yyyy-mm-dd hhmmss")
-    Destwb.Close
+    With ActiveWorkbook
+        .SaveAs PathName & "\" & FileName & Format(Now, "yyyy-mm-dd hhmmss")
+        .Close
+    End With
     
     Application.DisplayAlerts = True
     
     MsgBox "You can find the summarized file in " & PathName & "."
     
 End Sub
-
-
-
