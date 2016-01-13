@@ -136,6 +136,7 @@ Next
         FolderName2 = FolderName & "\" & Destwb.Sheets(1).Name
         MkDir FolderName2
         MkDir FolderName & "\" & Destwb.Sheets(1).Name & "\PBC"
+        MkDir FolderName & "\" & Destwb.Sheets(1).Name & "\Workpapers"
 
             'Save the new workbook and close it
             With Destwb
