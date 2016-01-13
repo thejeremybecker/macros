@@ -132,10 +132,14 @@ Next
                 Application.CutCopyMode = False
             End If
 
+        'create folder named as filename
+        FolderName2 = FolderName & "\" & Destwb.Sheets(1).Name
+        MkDir FolderName2
+        MkDir FolderName & "\" & Destwb.Sheets(1).Name & "\PBC"
 
             'Save the new workbook and close it
             With Destwb
-                .SaveAs FolderName _
+                .SaveAs FolderName2 _
                       & "\" & Destwb.Sheets(1).Name & FileExtStr, _
                         FileFormat:=FileFormatNum
                 .Close False
