@@ -1,4 +1,10 @@
 Sub SelectRandomSample()
+' this macro selects random sample from population listing starting in A1 (headers in row 1)
+' - adds two columns to the left, "Selection" and "Random Number"
+' - assigns a random number to each row
+' - sorts by random number column, smallest to largest
+' - numbers and highlights top rows per sample size
+
 Dim ws As Worksheet
 Set ws = ActiveWorkbook.ActiveSheet
 Dim LastCol As Long
