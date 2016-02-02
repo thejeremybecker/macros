@@ -1,0 +1,58 @@
+Sub SelectRandomSample()
+Dim ws As Worksheet
+Set ws = ThisWorkbook.ActiveSheet
+Dim LastCol As Long
+With ActiveSheet
+    LastCol = .Cells(1, .Columns.Count).End(xlToLeft).Column
+End With
+Dim myCol As String
+myCol = GetColumnLetter(LastCol + 2)
+Dim rws As Long
+Range("A:B").EntireColumn.Insert
+rws = Range("C2").End(xlDown).Row
+If rws > 10000 Then
+    If MsgBox(rws & " rows. Is this correct?", vbOKCancel) = vbCancel Then
+        Exit Sub
+    End If
+End If
+Dim sam As Variant
+sam = InputBox("How many samples?")
+If sam < rws Then
+    ws.Cells(1, 2) = "Random Number"
+    ws.Cells(1, 1) = "Selection"
+For i = 2 To rws
+    Randomize
+    ws.Cells(i, 2) = Rnd
+Next i
+Columns("B:B").ColumnWidth = 17
+Columns("B:B").NumberFormat = "0.0000000000000"
+ws.Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets("Sheet1").Sort.SortFields.Add Key:=Range("B:B") _
+        , SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+    With ws.Sort
+        .SetRange Range("A:" & myCol)
+        .Header = xlYes
+        .MatchCase = False
+        .Orientation = xlTopToBottom
+        .SortMethod = xlPinYin
+        .Apply
+    End With
+For i = 2 To (sam + 1)
+    ws.Cells(i, 1) = i - 1
+    With ws.Range(Cells(i, 1), Cells(i, myCol)).Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 65535
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    Next i
+Else
+    MsgBox ("Too many samples. Good-bye")
+End If
+End Sub
+Function GetColumnLetter(colNum As Long) As String
+    Dim vArr
+    vArr = Split(Cells(1, colNum).Address(True, False), "$")
+    GetColumnLetter = vArr(0)
+End Function
