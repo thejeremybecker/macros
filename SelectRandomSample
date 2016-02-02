@@ -1,6 +1,6 @@
 Sub SelectRandomSample()
 Dim ws As Worksheet
-Set ws = ThisWorkbook.ActiveSheet
+Set ws = ActiveWorkbook.ActiveSheet
 Dim LastCol As Long
 With ActiveSheet
     LastCol = .Cells(1, .Columns.Count).End(xlToLeft).Column
@@ -48,7 +48,8 @@ For i = 2 To (sam + 1)
     End With
     Next i
 Else
-    MsgBox ("Too many samples. Good-bye")
+    MsgBox ("Sample size is greater than population. Good-bye")
+    ws.Columns("A:B").EntireColumn.Delete
 End If
 End Sub
 Function GetColumnLetter(colNum As Long) As String
