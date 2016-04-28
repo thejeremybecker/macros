@@ -1,0 +1,33 @@
+Sub NormalizeCSV_2Columns()
+' splits CSVs in column B to separate rows
+' unique values should be in column A, CSVs in column B
+' output goes in columns C-D
+
+Dim objRegex As Object
+Dim X
+Dim Y
+Dim lngRow As Long
+Dim lngCnt As Long
+Dim tempArr() As String
+Dim strArr
+Set objRegex = CreateObject("vbscript.regexp")
+objRegex.Pattern = "^\s+(.+?)$"
+
+X = Range([a1], Cells(Rows.Count, "b").End(xlUp)).Value2
+'X = Selection
+
+ReDim Y(1 To 2, 1 To 1000)
+For lngRow = 1 To UBound(X, 1)
+     'Split each string by ","
+    tempArr = Split(X(lngRow, 2), ",")
+    For Each strArr In tempArr
+        lngCnt = lngCnt + 1
+         'Add another 1000 records to resorted array every 1000 records
+        If lngCnt Mod 1000 = 0 Then ReDim Preserve Y(1 To 2, 1 To lngCnt + 1000)
+        Y(1, lngCnt) = X(lngRow, 1)
+        Y(2, lngCnt) = objRegex.Replace(strArr, "$1")
+    Next
+Next lngRow
+ 'Dump the re-ordered range to columns C:D
+[c1].Resize(lngCnt, 2).Value2 = Application.Transpose(Y)
+End Sub
