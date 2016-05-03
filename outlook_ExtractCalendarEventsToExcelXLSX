@@ -1,0 +1,91 @@
+Sub ExportAppointmentsToExcel()
+    ' select calendar in Outlook, then run this macro
+    ' macro prompts for date range and output file location/name
+    ' outputs to xlsx format
+    
+    Const SCRIPT_NAME = "Export Appointments to Excel (Rev 1)"
+    Const xlAscending = 1
+    Const xlYes = 1
+    Dim olkFld As Object, _
+        olkLst As Object, _
+        olkRes As Object, _
+        olkApt As Object, _
+        olkRec As Object, _
+        excApp As Object, _
+        excWkb As Object, _
+        excWks As Object, _
+        lngRow As Long, _
+        lngCnt As Long, _
+        strFil As String, _
+        strLst As String, _
+        strDat As String, _
+        datBeg As Date, _
+        datEnd As Date, _
+        arrTmp As Variant
+    Set olkFld = Application.ActiveExplorer.CurrentFolder
+    If olkFld.DefaultItemType = olAppointmentItem Then
+        strDat = InputBox("Enter the date range of the appointments to export in the form ""mm/dd/yyyy to mm/dd/yyyy""", SCRIPT_NAME, Date & " to " & Date)
+        arrTmp = Split(strDat, "to")
+        datBeg = IIf(IsDate(arrTmp(0)), arrTmp(0), Date) & " 12:00am"
+        datEnd = IIf(IsDate(arrTmp(1)), arrTmp(1), Date) & " 11:59pm"
+        strFil = InputBox("Enter a filename (including path) to save the exported appointments to.", SCRIPT_NAME)
+        If strFil <> "" Then
+            Set excApp = CreateObject("Excel.Application")
+            Set excWkb = excApp.Workbooks.Add()
+            Set excWks = excWkb.Worksheets(1)
+            'Write Excel Column Headers
+            With excWks
+                .Cells(1, 1) = "Category"
+                .Cells(1, 2) = "Subject"
+                .Cells(1, 3) = "Starting Date"
+                .Cells(1, 4) = "Ending Date"
+                .Cells(1, 5) = "Start Time"
+                .Cells(1, 6) = "End Time"
+                .Cells(1, 7) = "Hours"
+                .Cells(1, 8) = "Attendees"
+            End With
+            lngRow = 2
+            Set olkLst = olkFld.Items
+            olkLst.Sort "[Start]"
+            olkLst.IncludeRecurrences = True
+            Set olkRes = olkLst.Restrict("[Start] >= '" & Format(datBeg, "ddddd h:nn AMPM") & "' AND [Start] <= '" & Format(datEnd, "ddddd h:nn AMPM") & "'")
+            'Write appointments to spreadsheet
+            For Each olkApt In olkRes
+                'Only export appointments
+                If olkApt.Class = olAppointment Then
+                    strLst = ""
+                    For Each olkRec In olkApt.Recipients
+                        strLst = strLst & olkRec.Name & ", "
+                    Next
+                    If strLst <> "" Then strLst = Left(strLst, Len(strLst) - 2)
+                    'Add a row for each field in the message you want to export
+                    excWks.Cells(lngRow, 1) = olkApt.Categories
+                    excWks.Cells(lngRow, 2) = olkApt.Subject
+                    excWks.Cells(lngRow, 3) = Format(olkApt.Start, "mm/dd/yyyy")
+                    excWks.Cells(lngRow, 4) = Format(olkApt.End, "mm/dd/yyyy")
+                    excWks.Cells(lngRow, 5) = Format(olkApt.Start, "hh:nn ampm")
+                    excWks.Cells(lngRow, 6) = Format(olkApt.End, "hh:nn ampm")
+                    excWks.Cells(lngRow, 7) = DateDiff("n", olkApt.Start, olkApt.End) / 60
+                    excWks.Cells(lngRow, 7).NumberFormat = "0.00"
+                    excWks.Cells(lngRow, 8) = strLst
+                    lngRow = lngRow + 1
+                    lngCnt = lngCnt + 1
+                End If
+            Next
+            excWks.Columns("A:H").AutoFit
+            excWks.Range("A1:H" & lngRow - 1).Sort Key1:="Category", Order1:=xlAscending, Header:=xlYes
+            excWks.Cells(lngRow, 7) = "=sum(G2:G" & lngRow - 1 & ")"
+            excWkb.SaveAs strFil
+            excWkb.Close
+            MsgBox "Process complete.  A total of " & lngCnt & " appointments were exported.", vbInformation + vbOKOnly, SCRIPT_NAME
+        End If
+    Else
+        MsgBox "Operation cancelled.  The selected folder is not a calendar.  You must select a calendar for this macro to work.", vbCritical + vbOKOnly, SCRIPT_NAME
+    End If
+    Set excWks = Nothing
+    Set excWkb = Nothing
+    Set excApp = Nothing
+    Set olkApt = Nothing
+    Set olkLst = Nothing
+    Set olkFld = Nothing
+End Sub
