@@ -55,7 +55,7 @@ Sub ExportAppointmentsToExcel()
                 If olkApt.Class = olAppointment Then
                     strLst = ""
                     For Each olkRec In olkApt.Recipients
-                        strLst = strLst & olkRec.Name & ", "
+                        strLst = strLst & olkRec.Name & "; "
                     Next
                     If strLst <> "" Then strLst = Left(strLst, Len(strLst) - 2)
                     'Add a row for each field in the message you want to export
