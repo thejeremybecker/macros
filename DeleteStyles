@@ -1,0 +1,14 @@
+Sub DeleteStyles()
+    ' deletes non-system styles in Excel. 
+    ' useful for fixing bloated files, or files which are giving "too many formats" errors
+    ' source: http://www.mrexcel.com/forum/excel-questions/508248-excel-2007-remove-all-custom-styles.html
+    
+     Dim styT As Style
+     Dim intRet As Integer
+     On Error Resume Next
+     For Each styT In ActiveWorkbook.Styles
+         If Not styT.BuiltIn Then
+             If styT.Name <> "1" Then styT.Delete
+         End If
+     Next styT
+ End Sub
