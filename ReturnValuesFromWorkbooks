@@ -1,0 +1,36 @@
+Sub ReturnValuesFromWorkbooks()
+
+  Dim FileSystem As Object
+  Dim HostFolder As String
+
+  HostFolder = ThisWorkbook.Path ' searches in workbook directory and subdirectories
+
+  Set FileSystem = CreateObject("Scripting.FileSystemObject")
+  DoFolder FileSystem.GetFolder(HostFolder)
+
+End Sub
+
+Sub DoFolder(Folder)
+
+  Dim SubFolder
+  For Each SubFolder In Folder.Subfolders
+    DoFolder SubFolder
+  Next
+  
+  i = 2 ' sets starting row in list returned
+  ' i = Cells(Rows.Count, 1).End(xlUp).Row + 1
+    Dim File
+  For Each File In Folder.Files
+    ' add links in column 1
+    ActiveSheet.Cells(i, 1).Value = File.Name
+        
+    ' add path in column 2 with links
+    ActiveSheet.Hyperlinks.Add Anchor:=Cells(i, 2), Address:= _
+        File.Path, TextToDisplay:=File.Path
+    
+    
+    i = i + 1
+
+  Next
+
+End Sub
