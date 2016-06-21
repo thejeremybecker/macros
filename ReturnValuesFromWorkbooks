@@ -21,6 +21,8 @@ Sub DoFolder(Folder)
   ' i = Cells(Rows.Count, 1).End(xlUp).Row + 1
     Dim File
   For Each File In Folder.Files
+    If File.Name <> ThisWorkbook.Name Then
+  
     ' add links in column 1
     ActiveSheet.Cells(i, 1).Value = File.Name
         
@@ -30,7 +32,8 @@ Sub DoFolder(Folder)
     
     
     i = i + 1
-
+    End If
   Next
 
 End Sub
+
