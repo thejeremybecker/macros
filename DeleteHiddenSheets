@@ -1,0 +1,17 @@
+Sub DeleteHiddenWorksheets()
+'This Macro will remove all hidden worksheets from a workbook.
+'There will be a warning window that pops up to make sure you want
+'to do this just in case there is other information that is needed
+'within those hidden sheets.
+'source: http://www.teachexcel.com/free-excel-macros/m-26,delete-hidden-worksheets.html
+
+i = 1
+While i <= Worksheets.Count
+If Not Worksheets(i).Visible Then
+Worksheets(i).Delete
+Else
+i = i + 1
+End If
+Wend
+
+End Sub
