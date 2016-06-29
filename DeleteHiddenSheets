@@ -1,17 +1,45 @@
-Sub DeleteHiddenWorksheets()
+Sub DeleteStylesAndHiddenSheets()
 'This Macro will remove all hidden worksheets from a workbook.
 'There will be a warning window that pops up to make sure you want
 'to do this just in case there is other information that is needed
 'within those hidden sheets.
+
+' message box for hidden worksheets confirmation
+if msgbox("This will delete all hidden worksheets, are you sure?",vbOKCancel) = vbCancel Then Exit Sub
+
+' Delete custom styles
+' deletes non-system styles in Excel.
+' useful for fixing bloated files, or files which are giving "too many formats" errors
+' source: http://www.mrexcel.com/forum/excel-questions/508248-excel-2007-remove-all-custom-styles.html
+     Dim styT As Style
+     Dim styCount As Long
+     styCount = ActiveWorkbook.Styles.Count - 1
+     
+     On Error Resume Next
+     Application.StatusBar = "Deleting " & styCount & " custom styles. This may take awhile..."
+     For Each styT In ActiveWorkbook.Styles
+       
+         If Not styT.BuiltIn Then
+             If styT.Name <> "1" Then styT.Delete
+             styCurr = styCurr + 1
+         End If
+         
+     Next styT
+
+' Delete hidden tabs
 'source: http://www.teachexcel.com/free-excel-macros/m-26,delete-hidden-worksheets.html
 
-i = 1
-While i <= Worksheets.Count
-If Not Worksheets(i).Visible Then
-Worksheets(i).Delete
-Else
-i = i + 1
-End If
-Wend
-
+Application.DisplayAlerts = False
+Application.StatusBar = "Deleting hidden sheets..."
+    i = 1
+    While i <= Worksheets.Count
+    If Not Worksheets(i).Visible Then
+    Worksheets(i).Delete
+    Else
+    i = i + 1
+    End If
+    Wend
+     
+Application.StatusBar = False
+Application.DisplayAlerts = True
 End Sub
