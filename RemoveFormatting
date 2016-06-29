@@ -1,0 +1,20 @@
+Option Explicit 
+ 
+Sub RemoveFormatsAndRestoreFont() 
+     'Remove all formatting except changes in font and font size
+     'source: http://www.vbaexpress.com/kb/getarticle.php?kb_id=345
+     
+     'Turn off screen updates to improve performance
+    Application.ScreenUpdating = False 
+     
+     'Clear formatting
+    Selection.ClearFormats 
+     
+     'If you would like to restore the font to the application default as defined in
+     'Tools|Options|General, remove the ' from the beginning of the line below
+    Selection.Font.Name = Application.StandardFont
+     
+     'Restore screen updates to display changes
+    Application.ScreenUpdating = True 
+     
+End Sub 
