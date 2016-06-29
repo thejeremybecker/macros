@@ -1,0 +1,15 @@
+Sub StatusMessage()
+' shows status message in Excel message bar at bottom left of window
+' source: http://stackoverflow.com/questions/5181164/progress-bar-in-vba-excel
+
+Dim x               As Integer 
+Dim MyTimer         As Double 
+
+'Change this loop as needed.
+For x = 1 To 50
+    ' Do stuff
+    Application.StatusBar = "Progress: " & x & " of 50: " & Format(x / 50, "0%")
+Next x 
+
+Application.StatusBar = False
+End Sub
