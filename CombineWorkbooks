@@ -1,0 +1,62 @@
+Option Explicit
+Sub CombineWorkbooks()
+'Author:    Jerry Beaucaire
+'Date:      8/16/2010
+'Summary:   Import all XLSX files from a folder into separate sheets
+'           named for the XLSX filenames
+'Update:    2/8/2013   Macro replaces existing sheets if they already exist in master workbook
+Dim fPath   As String
+Dim fCSV    As String
+Dim flocation As String
+Dim wbCSV   As Workbook
+Dim wbMST   As Workbook
+Dim cPath   As Workbook
+Workbooks.Add
+Set wbMST = ActiveWorkbook
+fPath = ThisWorkbook.Path                'path to XLSX files
+fPath = GetFolder("C:\")
+
+Application.ScreenUpdating = False  'speed up macro
+Application.DisplayAlerts = False   'no error messages, take default answers
+fCSV = Dir(fPath & "\" & "*.xlsx")         'start the xlsx file listing
+
+    On Error Resume Next
+    Do While Len(fCSV) > 0
+        Set wbCSV = Workbooks.Open(fPath & "\" & fCSV)                    'open a XLSX file
+        wbMST.Sheets(ActiveSheet.Name).Delete                       'delete sheet if it exists
+        ActiveSheet.Move After:=wbMST.Sheets(wbMST.Sheets.Count)    'move new sheet into Mstr
+        Columns.AutoFit             'clean up display
+        fCSV = Dir                  'ready next CSV
+    Loop
+  
+  
+  
+ActiveWorkbook.Sheets("Sheet1").Delete
+
+    ActiveWorkbook.SaveAs Filename:= _
+        fPath & "\Combined.xlsx", FileFormat:= _
+        xlOpenXMLWorkbook, CreateBackup:=False
+
+flocation = Workbooks("Combined.xlsx").FullName
+Workbooks("Combined.xlsx").Close
+wbMST.Close saveChanges:=False
+Application.ScreenUpdating = True
+Set wbCSV = Nothing
+MsgBox "You can find the combined files in " & flocation
+End Sub
+
+Function GetFolder(strPath As String) As String
+Dim fldr As FileDialog
+Dim sItem As String
+Set fldr = Application.FileDialog(msoFileDialogFolderPicker)
+With fldr
+    .Title = "Folder with Files to Merge"
+    .AllowMultiSelect = False
+    .InitialFileName = strPath
+    If .Show <> -1 Then GoTo NextCode
+    sItem = .SelectedItems(1)
+End With
+NextCode:
+GetFolder = sItem
+Set fldr = Nothing
+End Function
