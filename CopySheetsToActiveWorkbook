@@ -1,0 +1,15 @@
+Sub CopySheetsToActiveWorkbook()
+  'copies first sheet of every open workbook into workbook that is running this code
+  'source: http://excel.tips.net/T007425_Combining_Worksheets_from_Many_Workbooks.html
+    
+    Dim wkb As Workbook
+        Dim sWksName As String
+
+    For Each wkb In Workbooks
+        If wkb.Name <> ThisWorkbook.Name Then
+            wkb.Worksheets(1).Copy _
+              Before:=ThisWorkbook.Sheets(1)
+        End If
+    Next
+    Set wkb = Nothing
+End Sub
