@@ -1,6 +1,6 @@
 Sub Button1_Click()
 Application.ScreenUpdating = False
-Dim i As Integer, j As Integer, lin As Integer, k As Integer
+Dim i As Integer, j As Integer, lin As Integer, k As Integer, l As Integer
 
 'wb and sheet variables
 Dim wb As Workbook
@@ -10,10 +10,12 @@ Set wb = ActiveWorkbook
 Set ws = Sheets("Request List Matrix")
 Set ds = Sheets("Request List Template")
 lin = 8 'first line in request template sheet
-k = ds.Cells(lin - 1, Columns.Count).End(xlToRight).Column
+
+l = 10 ' number of columns in template worksheet
 
 wb.Activate
 ws.Select
+
 
 'set i loop range (rows)
 For i = 3 To Range("A2").End(xlDown).Row
@@ -38,18 +40,6 @@ For i = 3 To Range("A2").End(xlDown).Row
 
         'find and replace any <> fields with system name
         ds.Cells(lin, 4).Replace "<*>", ds.Cells(lin, 2).Value
-
-        'copy formatting and right-most columns down one row if it's not the first row
-        If lin > 8 Then
-            Range(ds.Cells(lin - 1, 1), ds.Cells(lin - 1, 4)).Copy
-            Range(ds.Cells(lin - 1, 1), ds.Cells(lin, 4)).PasteSpecial (xlPasteFormats)
-
-            'copy right-most cells down to current line
-            Range(ds.Cells(lin - 1, 5), ds.Cells(lin - 1, k)).Copy _
-            Destination:=Range(ds.Cells(lin - 1, 5), ds.Cells(lin, k))
-
-            Application.CutCopyMode = False
-        End If
 
         'increment line counter
         lin = lin + 1
@@ -77,6 +67,9 @@ Range(ds.Rows(9), ds.Rows(lin)).Delete
 Range(ds.Rows(9), ds.Rows(lin)).ClearFormats
 ds.Rows(8).ClearContents
 
+
 Application.ScreenUpdating = True
 
 End Sub
+
+
