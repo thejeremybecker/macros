@@ -14,12 +14,16 @@ Sub BuildTestScripts()
         
     Dim ws1 As Worksheet
     Dim MyCell As Range, MyRange As Range
+    Dim MTab As Integer
 
 ' 1 - set name of Master tab
     Set ws1 = ActiveWorkbook.Worksheets("Master")
     
-' 2 - set source tab name
-' 3 - set top left cell in range
+' 2 - declare tab index value of Master tab
+    MTab = 2
+
+' 3 - set source tab name
+' 4 - set top left cell in range
     Set MyRange = Sheets("RACM").Range("A7")
     
     Set MyRange = Range(MyRange, MyRange.End(xlDown))
@@ -39,20 +43,16 @@ Sub BuildTestScripts()
     Next MyCell
 
     Sheets("Master").Select
-    Sheets("Master").Move Before:=Sheets(4)
+    Sheets("Master").Move Before:=Sheets(MTab)
  
  ' Changes cell values in reference cell in worksheets so that VLOOKUPs pull in data from matrix
-    
     Dim ws2 As Worksheet
     For Each ws2 In ActiveWorkbook.Worksheets
-    
-' 4 - set starting tab index here to set cell values
-      If ws2.Index > 4 Then
+    If ws2.Index > MTab Then
       
 ' 5 - set this cell to match pivot cell in Master
-      ws2.Range("C1") = ws2.Name
-      
-      End If
+        ws2.Range("C4") = ws2.Name
+    End If
 Next
 
 'This part removes formulas and copies tabs into new workbooks
@@ -87,7 +87,7 @@ Next
     For Each sh In Sourcewb.Worksheets
     
     'Set to not copy first sheets
-    If sh.Index > 4 Then
+    If sh.Index > MTab Then
         
         'If the sheet is visible then copy it to a new workbook
         If sh.Visible = -1 Then
@@ -135,7 +135,6 @@ Next
         'create folder named as filename
         FolderName2 = FolderName & "\" & Destwb.Sheets(1).Name
         MkDir FolderName2
-        MkDir FolderName & "\" & Destwb.Sheets(1).Name & "\PBC"
         MkDir FolderName & "\" & Destwb.Sheets(1).Name & "\Workpapers"
 
             'Save the new workbook and close it
@@ -155,7 +154,7 @@ GoToNextSheet:
 'remove this for loop to maintain all test scripts
 'in a single workbook with vlookup back to RACM tab
 For Each sh In Sourcewb.Worksheets
-    If sh.Index > 4 Then
+    If sh.Index > MTab Then
         Application.DisplayAlerts = False
         sh.Delete
         Application.DisplayAlerts = True
