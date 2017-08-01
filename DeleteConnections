@@ -1,0 +1,8 @@
+Sub DeleteConnections()
+'source: https://www.mrexcel.com/forum/excel-questions/381140-macro-delete-all-exernal-data-connections.html
+'Deleted external connections. Reopen to remove banner
+
+Do While ActiveWorkbook.Connections.Count > 0
+ActiveWorkbook.Connections.Item(ActiveWorkbook.Connections.Count).Delete
+Loop
+End Sub
