@@ -1,0 +1,27 @@
+Sub PivotView()'
+' Changes pivot view to tabular, no totals or subtotals
+
+Dim PT As PivotTable
+On Error Resume Next
+Set PT = ActiveCell.PivotTable
+On Error GoTo 0
+If Not PT Is Nothing Then 'check if selected cell is pivot table
+
+    Dim PvtTbl As PivotTable
+    Dim pvtFld As PivotField
+    Set PvtTbl = ActiveCell.PivotTable
+        PvtTbl.RowAxisLayout xlTabularRow
+        With PvtTbl
+            .ColumnGrand = False
+            .RowGrand = False
+        End With
+        
+    'hide Subtotals for all fields in the PivotTable .
+    With PvtTbl
+        For Each pvtFld In .PivotFields
+        pvtFld.Subtotals(1) = True
+        pvtFld.Subtotals(1) = False
+    Next pvtFld
+    End With
+End If
+End Sub
