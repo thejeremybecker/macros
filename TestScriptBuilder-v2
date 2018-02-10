@@ -1,0 +1,91 @@
+Sub CreateTestScripts()
+' create workbooks from source matrix using a template sheet
+' template sheet is updated based on vlookup to matrix using pivot cell
+' formulas are removed and sheet is saved as workbook at path specified
+' - each row has sheet name, pivot id (used by vlookups in master sheet), and path/filename
+' - for each row in rcm
+' -- update sheet name, pivot id, path, and filename variables
+' -- create copy of Master sheet
+' -- change sheet name to sheet name variables
+' -- write pivot id to cell A1 (formulas will then populate with row values)
+' -- copy/paste sheet as values to remove formulas
+' -- delete pivot id in cell A1
+' -- save sheet as new workbook in path/filename
+' -- delete sheet from macro workbook
+
+Dim wb As Workbook              'Matrix workbook
+Dim wsMaster As Worksheet       'Master sheet
+Dim wsMasterIndex As Integer    'Master sheet index
+Dim rMatrixKey As Range         'Source matrix range
+Dim rMatrix As Range            'Source matrix
+Dim oKey As String              'Pivot cell in output sheet
+Dim ows As Worksheet            'output worksheet
+Dim owb As Workbook             'output workbook
+Dim oID As String               'id string input for pivot cell (from matrix, must be unique)
+Dim oSheetName As String        'output sheet name (from matrix, must be unique)
+Dim oPath As String             'output path (from matrix)
+Dim oFileName As String         'output file name (from matrix, must be unique per directory)
+
+oKey = "A1"                     'pivot cell
+Set wb = ActiveWorkbook
+Set wsMaster = wb.Worksheets("Master")
+wsMasterIndex = 2
+Set rMatrix = Sheets("Matrix").Range("A3") 'this is the first cell in the source range
+Set rMatrix = Range(rMatrix, rMatrix.End(xlDown))
+Application.ScreenUpdating = False
+For Each rMatrixKey In rMatrix
+    If rMatrixKey.EntireRow.Hidden = False Then 'only includes non-hidden rows
+        oID = rMatrixKey.Value
+        oSheetName = rMatrixKey.Offset(, 1).Value
+        oFileName = rMatrixKey.Offset(, 2).Value
+        oPath = rMatrixKey.Offset(, 3).Value
+        wsMaster.Copy ActiveWorkbook.Sheets(Sheets.Count)
+        ActiveWorkbook.Worksheets("Master (2)").Name = oSheetName
+        Set ows = Sheets(wsMasterIndex)
+        ows.Range(oKey) = oID
+        With ows.UsedRange
+            .Cells.Copy
+            .Cells.PasteSpecial xlPasteValues
+            .Cells(1).Select
+        End With
+        Application.CutCopyMode = False
+        ows.Range(oKey) = ""
+        oPath = ActiveWorkbook.Path & oPath
+        MyMkDir oPath
+        ows.Copy
+        Set owb = ActiveWorkbook
+        With owb
+            .SaveAs oPath & "\" & owb.Sheets(1).Name & ".xlsx", FileFormat:=51
+            .Close False
+        End With
+        Application.DisplayAlerts = False
+        ows.Delete
+        Application.DisplayAlerts = True
+    End If
+Next rMatrixKey
+Application.ScreenUpdating = True
+End Sub
+
+Public Sub MyMkDir(sPath As String) 'creates directories with nested subfolders
+' Source: https://www.devhut.net/2011/09/15/vba-create-directory-structurecreate-multiple-directories/
+    Dim iStart          As Integer
+    Dim aDirs           As Variant
+    Dim sCurDir         As String
+    Dim i               As Integer
+ 
+    If sPath <> "" Then
+        aDirs = Split(sPath, "\")
+        If Left(sPath, 2) = "\\" Then
+            iStart = 3
+        Else
+            iStart = 1
+        End If
+        sCurDir = Left(sPath, InStr(iStart, sPath, "\"))
+        For i = iStart To UBound(aDirs)
+            sCurDir = sCurDir & aDirs(i) & "\"
+            If Dir(sCurDir, vbDirectory) = vbNullString Then
+                MkDir sCurDir
+            End If
+        Next i
+    End If
+End Sub
