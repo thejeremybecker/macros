@@ -29,8 +29,8 @@ Dim oFileName As String         'output file name (from matrix, must be unique p
 oKey = "A1"                     'pivot cell
 Set wb = ActiveWorkbook
 Set wsMaster = wb.Worksheets("Master")
-wsMasterIndex = 2
-Set rMatrix = Sheets("Matrix").Range("A3") 'this is the first cell in the source range
+wsMasterIndex = 3
+Set rMatrix = Sheets("Matrix").Range("A4") 'this is the first cell in the source range
 Set rMatrix = Range(rMatrix, rMatrix.End(xlDown))
 Application.ScreenUpdating = False
 For Each rMatrixKey In rMatrix
@@ -55,7 +55,7 @@ For Each rMatrixKey In rMatrix
         ows.Copy
         Set owb = ActiveWorkbook
         With owb
-            .SaveAs oPath & "\" & owb.Sheets(1).Name & ".xlsx", FileFormat:=51
+            .SaveAs oPath & "\" & oFileName, FileFormat:=51
             .Close False
         End With
         Application.DisplayAlerts = False
