@@ -1,0 +1,3 @@
+Sub DateFormatMySQL()
+  Selection.NumberFormat = "yyyy-mm-dd"
+End Sub
