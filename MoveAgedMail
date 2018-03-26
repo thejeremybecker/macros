@@ -1,4 +1,5 @@
 Sub MoveAgedMail()
+    'Outlook macro (works on Outlook 2013)
     'Moves all mail from inbox to specified folder if older than specified days
     'Source: http://www.slipstick.com/developer/macro-move-aged-mail/
     Dim objOutlook As Outlook.Application
