@@ -1,4 +1,5 @@
 Sub MergeSameCell()
+'Merges same adjacent cells in columns
 'Source: https://www.extendoffice.com/documents/excel/1138-excel-merge-same-value.html'
 'Updateby20131127
 Dim Rng As Range, xCell As Range
