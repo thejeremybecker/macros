@@ -1,0 +1,13 @@
+Public Sub SplitBreaksToRows()
+' Source: https://www.mrexcel.com/board/threads/replacing-line-breaks-with-a-new-row.595418/
+' Set column with breaks (G below) - if more than one, repeat multiple times or add a vArr for each column
+Dim lLastRow As Long
+Dim vArr1 As Variant
+lLastRow = Range("G" & Rows.Count).End(xlUp).Row
+On Error Resume Next
+For i = lLastRow To 2 Step -1
+vArr1 = Split(Range("G" & i).Value, Chr(10))
+Range("G" & i).Offset(1, 0).Resize(UBound(vArr1), 1).EntireRow.Insert Shift:=xlUp
+Range("G" & i).Resize(UBound(vArr1) + 1, 1).Value = Application.Transpose(vArr1)
+Next i
+End Sub
